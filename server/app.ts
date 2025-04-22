@@ -7,10 +7,12 @@ import { expensesRoute } from './routes/expenses'
 const app = new Hono()
 app.use('*', logger())
 
-app.route('/api/expenses', expensesRoute)
+const apiRoutes = app.basePath('/api').route('/expenses', expensesRoute)
 
 //                                ↓ this path starts in the root directory
 app.get('*', serveStatic({ root: './frontend/dist' }))
 app.get('*', serveStatic({ path: './frontend/dist/index.html' }))
+
+export type ApiRoutes = typeof apiRoutes
 
 export default app
