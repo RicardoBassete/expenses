@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: '3'
+
+# defines the method of checking for file changes
+method: timestamp
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    silent: true
+    desc: List all tasks
+    cmds:
+      - task --list-all
+
+  start:
+    silent: true
+    desc: Run prod server
+    deps:
+      - install
+    cmd: bun start
+
+  dev:
+    silent: true
+    desc: Run dev server
+    deps:
+      - install
+    cmd: bun dev
+
+  install:
+    silent: true
+    desc: Install deps
+    status:
+      - test -d node_modules # triggers if node_modules does not exists
+    sources: # triggers if one of these files changes based on the defined method
+      - package.json
+      - bun.lock
+    cmds:
+      - bun install
