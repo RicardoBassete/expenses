@@ -1,15 +1,23 @@
-import { useState } from 'react'
-import { Button } from './components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { useEffect, useState } from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [totalSpent, setTotalSpent] = useState(0)
+
+  useEffect(() => {
+    fetch('/api/expenses/total-spent')
+      .then(res => res.json())
+      .then(data => setTotalSpent(data.total))
+  }, [])
 
   return (
-    <div className="flex flex-col justify-center items-center gap-3 mx-auto max-w-2xl h-screen w-screen">
-      <Button onClick={() => setCount(count => count + 1)}>Up</Button>
-      <p>count is {count}</p>
-      <Button onClick={() => setCount(count => count - 1)}>Down</Button>
-    </div>
+    <Card className="w-[350px] m-auto">
+      <CardHeader>
+        <CardTitle>Total Spent</CardTitle>
+        <CardDescription>The total amount spent</CardDescription>
+      </CardHeader>
+      <CardContent>{totalSpent}</CardContent>
+    </Card>
   )
 }
 
