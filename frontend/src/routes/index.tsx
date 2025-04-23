@@ -1,7 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
-import { api } from './lib/api'
+import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
+
+import { api } from '@/lib/api'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 async function getTotalSpent() {
   const res = await api.expenses['total-spent'].$get()
@@ -18,7 +19,7 @@ function App() {
   if (error) return 'An error has occurred: ' + error.message
 
   return (
-    <Card className="w-[350px] m-auto">
+    <Card className="w-[350px] m-auto mt-4">
       <CardHeader>
         <CardTitle>Total Spent</CardTitle>
         <CardDescription>The total amount spent</CardDescription>
@@ -28,4 +29,6 @@ function App() {
   )
 }
 
-export default App
+export const Route = createFileRoute('/')({
+  component: App,
+})
