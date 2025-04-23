@@ -28,7 +28,7 @@ export const Route = createRootRoute({
         </Link>
       </div>
       <hr />
-      <div className="p-2">
+      <div className="p-2 max-w-3xl mx-auto">
         <Outlet />
       </div>
       <TanStackRouterDevtools />
