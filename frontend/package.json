@@ -38,6 +38,7 @@
     "@radix-ui/react-toggle-group": "^1.1.7",
     "@radix-ui/react-tooltip": "^1.2.3",
     "@tailwindcss/vite": "^4.1.4",
+    "@tanstack/react-form": "^1.6.3",
     "@tanstack/react-query": "^5.74.4",
     "@tanstack/react-router": "^1.117.0",
     "@tanstack/react-router-devtools": "^1.117.0",
