@@ -1,8 +1,13 @@
-import { createRootRoute, Link, Outlet } from '@tanstack/react-router'
+import { createRootRouteWithContext, Link, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { Button } from '@/components/ui/button'
+import { type QueryClient } from '@tanstack/react-query'
 
-export const Route = createRootRoute({
+interface RouterContext {
+  queryClient: QueryClient
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
       <div className="p-2 flex gap-2">
@@ -19,6 +24,11 @@ export const Route = createRootRoute({
         <Link to="/create-expense" className="[&.active]:font-bold">
           <Button variant={'outline'} className="cursor-pointer">
             Create Expense
+          </Button>
+        </Link>
+        <Link to="/profile" className="[&.active]:font-bold">
+          <Button variant={'outline'} className="cursor-pointer">
+            Profile
           </Button>
         </Link>
         <Link to="/about" className="[&.active]:font-bold">
