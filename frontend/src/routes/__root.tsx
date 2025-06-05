@@ -10,7 +10,7 @@ interface RouterContext {
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <>
-      <div className="p-2 flex gap-2">
+      <div className="p-2 flex gap-2 max-w-2xl m-auto">
         <Link to="/" className="[&.active]:font-bold">
           <Button variant={'outline'} className="cursor-pointer">
             Home
@@ -38,7 +38,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
         </Link>
       </div>
       <hr />
-      <div className="p-2 max-w-3xl mx-auto">
+      <div className="p-2 max-w-2xl m-auto">
         <Outlet />
       </div>
       <TanStackRouterDevtools />
