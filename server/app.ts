@@ -3,11 +3,12 @@ import { logger } from 'hono/logger'
 import { serveStatic } from 'hono/bun'
 
 import { expensesRoute } from './routes/expenses'
+import { authRoute } from './routes/auth'
 
 const app = new Hono()
 app.use('*', logger())
 
-const apiRoutes = app.basePath('/api').route('/expenses', expensesRoute)
+const apiRoutes = app.basePath('/api').route('/', authRoute).route('/expenses', expensesRoute)
 
 //                                ↓ this path starts in the root directory
 app.get('*', serveStatic({ root: './frontend/dist' }))
