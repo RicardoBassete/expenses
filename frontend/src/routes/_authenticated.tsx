@@ -1,3 +1,4 @@
+import { Button } from '@/components/ui/button'
 import { userQueryOptions } from '@/lib/api'
 import { createFileRoute, Outlet } from '@tanstack/react-router'
 
@@ -25,9 +26,13 @@ function RouteComponent() {
 
 function Login() {
   return (
-    <div className="p-2">
+    <div className="p-2 flex flex-col gap-2">
       You have to log in <br />
-      <a href="/api/login">Login</a>
+      <a href="/api/login">
+        <Button variant={'outline'} className="cursor-pointer">
+          Login
+        </Button>
+      </a>
     </div>
   )
 }
