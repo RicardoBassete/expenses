@@ -5,7 +5,7 @@ import { getUser } from '../kinde'
 
 import { db } from '../db'
 import { expenses as expensesTable } from '../db/schema/expenses'
-import { eq } from 'drizzle-orm'
+import { and, desc, eq, sum } from 'drizzle-orm'
 
 const expenseSchema = z.object({
   id: z.number().int().positive().min(1),
@@ -17,33 +17,47 @@ type Expense = z.infer<typeof expenseSchema>
 
 const createPostSchema = expenseSchema.omit({ id: true })
 
-const fakeExpenses: Expense[] = [
-  { id: 1, title: 'Coffee', amount: '50' },
-  { id: 2, title: 'Lunch', amount: '120' },
-  { id: 3, title: 'Grocery Shopping', amount: '250' },
-]
-
 export const expensesRoute = new Hono()
   .get('/', getUser, async c => {
     const user = c.var.user
 
-    const expenses = await db.select().from(expensesTable).where(eq(expensesTable.userId, user.id))
+    const expenses = await db
+      .select()
+      .from(expensesTable)
+      .where(eq(expensesTable.userId, user.id))
+      .orderBy(desc(expensesTable.createdAt))
+      .limit(100)
 
     return c.json({ expenses: expenses })
   })
   .get('/total-spent', getUser, async c => {
-    const total = fakeExpenses.reduce((accumulator, expense) => accumulator + Number(expense.amount), 0)
-    return c.json({ total })
+    const user = c.var.user
+
+    const result = await db
+      .select({ total: sum(expensesTable.amount) })
+      .from(expensesTable)
+      .where(eq(expensesTable.userId, user.id))
+      .limit(1)
+      .then(res => res[0])
+
+    return c.json({ total: result?.total })
   })
   .get('/:id{[0-9]+}', getUser, async c => {
     const id = parseInt(c.req.param('id'))
-    const expense = fakeExpenses.find(e => e.id === id)
+    const user = c.var.user
+
+    const expense = await db
+      .select()
+      .from(expensesTable)
+      .where(and(eq(expensesTable.userId, user.id), eq(expensesTable.id, id)))
+      .limit(1)
+      .then(res => res[0])
 
     if (!expense) {
       return c.notFound()
     }
 
-    return c.json({ expense })
+    return c.json({ expense: expense })
   })
   .post('/', zValidator('json', createPostSchema), getUser, async c => {
     const expense = c.req.valid('json')
@@ -62,13 +76,17 @@ export const expensesRoute = new Hono()
   })
   .delete('/:id{[0-9]+}', getUser, async c => {
     const id = parseInt(c.req.param('id'))
-    const index = fakeExpenses.findIndex(e => e.id === id)
+    const user = c.var.user
 
-    if (index === -1) {
+    const expense = await db
+      .delete(expensesTable)
+      .where(and(eq(expensesTable.userId, user.id), eq(expensesTable.id, id)))
+      .returning()
+      .then(res => res[0])
+
+    if (!expense) {
       return c.notFound()
     }
 
-    const removedExpense = fakeExpenses.splice(index, 1)[0]
-
-    return c.json({ expense: removedExpense })
+    return c.json({ expense: expense })
   })
