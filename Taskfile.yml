@@ -89,3 +89,10 @@ tasks:
     deps:
       - db-generate
     cmd: bun db:migrate
+
+  drizzle-studio:
+    silent: true
+    desc: Starts drizzle-kit studio
+    deps:
+      - server-install
+    cmd: bunx --bun drizzle-kit studio
