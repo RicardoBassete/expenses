@@ -57,7 +57,9 @@ function CreateExpense() {
                 onBlur={field.handleBlur}
                 onChange={e => field.handleChange(e.target.value)}
               />
-              {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? <em>{field.state.meta.errors}</em> : null}
+              {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? (
+                <em>{field.state.meta.errors}</em>
+              ) : null}
             </>
           )}
         />
@@ -76,7 +78,9 @@ function CreateExpense() {
                 onBlur={field.handleBlur}
                 onChange={e => field.handleChange(e.target.value)}
               />
-              {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? <em>{field.state.meta.errors}</em> : null}
+              {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? (
+                <em>{field.state.meta.errors}</em>
+              ) : null}
             </>
           )}
         />

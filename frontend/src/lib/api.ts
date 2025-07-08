@@ -15,4 +15,8 @@ async function getCurrentUser() {
   return data
 }
 
-export const userQueryOptions = queryOptions({ queryKey: ['get-current-user'], queryFn: getCurrentUser, staleTime: Infinity })
+export const userQueryOptions = queryOptions({
+  queryKey: ['get-current-user'],
+  queryFn: getCurrentUser,
+  staleTime: Infinity,
+})

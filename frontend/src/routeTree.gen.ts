@@ -49,13 +49,11 @@ const AuthenticatedExpensesRoute = AuthenticatedExpensesImport.update({
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
-const AuthenticatedCreateExpenseRoute = AuthenticatedCreateExpenseImport.update(
-  {
-    id: '/create-expense',
-    path: '/create-expense',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any,
-)
+const AuthenticatedCreateExpenseRoute = AuthenticatedCreateExpenseImport.update({
+  id: '/create-expense',
+  path: '/create-expense',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -122,9 +120,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
 }
 
-const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
-  AuthenticatedRouteChildren,
-)
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(AuthenticatedRouteChildren)
 
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteWithChildren
@@ -179,9 +175,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
 }
 
-export const routeTree = rootRoute
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
+export const routeTree = rootRoute._addFileChildren(rootRouteChildren)._addFileTypes<FileRouteTypes>()
 
 /* ROUTE_MANIFEST_START
 {

@@ -13,5 +13,5 @@ export const expenses = pgTable(
     return {
       userIdIndex: index('user_id_idx').on(expenses.userId),
     }
-  }
+  },
 )
