@@ -8,6 +8,15 @@ const envSchema = z.object({
   KINDE_LOGOUT_REDIRECT_URI: z.string().url('KINDE_LOGOUT_REDIRECT_URI must be a valid url'),
   KINDE_DOMAIN: z.string().url('KINDE_DOMAIN must be a valid url'),
   KINDE_REDIRECT_URI: z.string().url('KINDE_REDIRECT_URI must be a valid url'),
+  DATABASE_URL: z.string().nonempty(),
 })
 
-export const env = envSchema.parse(process.env)
+const result = envSchema.safeParse(process.env)
+
+if (!result.success) {
+  console.error('Error validading .env variables')
+  console.table(result.error.issues, ['path', 'message'])
+  process.exit(1)
+}
+
+export const env = result.data

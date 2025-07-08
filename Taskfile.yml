@@ -74,3 +74,18 @@ tasks:
       - bun.lock
     cmds:
       - bun install
+
+  # DB tasks
+  db-generate:
+    silent: true
+    desc: Generates new drizzle sql files
+    deps:
+      - server-install
+    cmd: bun db:generate
+
+  db-migrate:
+    silent: true
+    desc: Migrates db
+    deps:
+      - db-generate
+    cmd: bun db:migrate

@@ -3,10 +3,14 @@ import { zValidator } from '@hono/zod-validator'
 import { z } from 'zod'
 import { getUser } from '../kinde'
 
+import { db } from '../db'
+import { expenses as expensesTable } from '../db/schema/expenses'
+import { eq } from 'drizzle-orm'
+
 const expenseSchema = z.object({
   id: z.number().int().positive().min(1),
   title: z.string().min(3).max(100),
-  amount: z.number().int().positive(),
+  amount: z.string(),
 })
 
 type Expense = z.infer<typeof expenseSchema>
@@ -14,17 +18,21 @@ type Expense = z.infer<typeof expenseSchema>
 const createPostSchema = expenseSchema.omit({ id: true })
 
 const fakeExpenses: Expense[] = [
-  { id: 1, title: 'Coffee', amount: 50 },
-  { id: 2, title: 'Lunch', amount: 120 },
-  { id: 3, title: 'Grocery Shopping', amount: 250 },
+  { id: 1, title: 'Coffee', amount: '50' },
+  { id: 2, title: 'Lunch', amount: '120' },
+  { id: 3, title: 'Grocery Shopping', amount: '250' },
 ]
 
 export const expensesRoute = new Hono()
   .get('/', getUser, async c => {
-    return c.json({ expenses: fakeExpenses })
+    const user = c.var.user
+
+    const expenses = await db.select().from(expensesTable).where(eq(expensesTable.userId, user.id))
+
+    return c.json({ expenses: expenses })
   })
   .get('/total-spent', getUser, async c => {
-    const total = fakeExpenses.reduce((accumulator, expense) => accumulator + expense.amount, 0)
+    const total = fakeExpenses.reduce((accumulator, expense) => accumulator + Number(expense.amount), 0)
     return c.json({ total })
   })
   .get('/:id{[0-9]+}', getUser, async c => {
@@ -39,9 +47,18 @@ export const expensesRoute = new Hono()
   })
   .post('/', zValidator('json', createPostSchema), getUser, async c => {
     const expense = c.req.valid('json')
-    const newExpense = { ...expense, id: fakeExpenses.length + 1 }
-    fakeExpenses.push(newExpense)
-    return c.json({ expense: newExpense })
+    const user = c.var.user
+
+    const result = await db
+      .insert(expensesTable)
+      .values({
+        title: expense.title,
+        amount: expense.amount,
+        userId: user.id,
+      })
+      .returning()
+
+    return c.json({ expense: result })
   })
   .delete('/:id{[0-9]+}', getUser, async c => {
     const id = parseInt(c.req.param('id'))
