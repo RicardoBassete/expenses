@@ -58,7 +58,7 @@ export const getUser = createMiddleware<MiddlewareEnv>(async (c, next) => {
     }
     const user = await kindeClient.getUser(manager)
     c.set('user', user)
-    next()
+    await next()
   } catch (error) {
     console.error(error)
   }
