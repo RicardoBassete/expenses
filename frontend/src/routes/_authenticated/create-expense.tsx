@@ -5,10 +5,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 
-import { api } from '@/lib/api'
+import { api, getAllExpensesQueryOptions } from '@/lib/api'
 
 import { createExpenseSchema } from '@server/sharedTypes'
 import { Calendar } from '@/components/ui/calendar'
+
+import { useQueryClient } from '@tanstack/react-query'
 
 export const Route = createFileRoute('/_authenticated/create-expense')({
   component: CreateExpense,
@@ -16,6 +18,7 @@ export const Route = createFileRoute('/_authenticated/create-expense')({
 
 function CreateExpense() {
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const form = useForm({
     defaultValues: {
@@ -28,6 +31,7 @@ function CreateExpense() {
       if (!res.ok) {
         throw new Error('Server error')
       }
+      await queryClient.invalidateQueries({ queryKey: getAllExpensesQueryOptions.queryKey })
       navigate({ to: '/expenses' })
     },
   })

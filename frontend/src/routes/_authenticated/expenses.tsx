@@ -2,20 +2,11 @@ import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, Tabl
 import { Skeleton } from '@/components/ui/skeleton'
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
-import { api } from '@/lib/api'
+import { getAllExpensesQueryOptions } from '@/lib/api'
 
 export const Route = createFileRoute('/_authenticated/expenses')({
   component: Expenses,
 })
-
-async function getAllExpenses() {
-  const res = await api.expenses.$get()
-  if (!res.ok) {
-    throw new Error('Server error')
-  }
-  const data = await res.json()
-  return data
-}
 
 function SkeletonTableRow() {
   return Array(3)
@@ -41,7 +32,7 @@ function SkeletonTableRow() {
 }
 
 function Expenses() {
-  const { isPending, error, data } = useQuery({ queryKey: ['expenses'], queryFn: getAllExpenses })
+  const { isPending, error, data } = useQuery(getAllExpensesQueryOptions)
 
   if (error) return 'An error has occurred: ' + error.message
 
