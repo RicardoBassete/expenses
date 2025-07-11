@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar'
 
 import { useQueryClient } from '@tanstack/react-query'
 import { useCreateExpenseStatus } from '@/context/create-expense-status'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_authenticated/create-expense')({
   component: CreateExpense,
@@ -43,8 +44,15 @@ function CreateExpense() {
           ...existingExpenses,
           expenses: [newExpense, ...existingExpenses.expenses],
         })
-      } catch (error) {
+
+        toast('Expense created', {
+          description: `Successfully created new expense: ${newExpense.title}`,
+        })
+      } catch {
         createExpenseStatus.setNewExpense(null)
+        toast('ERROR', {
+          description: 'Failed to create expense',
+        })
       } finally {
         createExpenseStatus.setNewExpense(null)
       }
