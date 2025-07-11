@@ -27,10 +27,15 @@ function RouteComponent() {
 function Login() {
   return (
     <div className="p-2 flex flex-col gap-2">
-      You have to log in <br />
+      <p>You have to log in</p>
       <a href="/api/login">
         <Button variant={'outline'} className="cursor-pointer">
           Login
+        </Button>
+      </a>
+      <a href="/api/register">
+        <Button variant={'outline'} className="cursor-pointer">
+          Register
         </Button>
       </a>
     </div>

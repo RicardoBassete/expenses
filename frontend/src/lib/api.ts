@@ -12,7 +12,7 @@ async function getCurrentUser() {
     throw new Error('server error')
   }
   const data = await res.json()
-  return data
+  return { user: data }
 }
 
 export const userQueryOptions = queryOptions({
