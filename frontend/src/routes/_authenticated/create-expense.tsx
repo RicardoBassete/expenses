@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 
 import { api } from '@/lib/api'
 
+import { createExpenseSchema } from '@server/sharedTypes'
+
 export const Route = createFileRoute('/_authenticated/create-expense')({
   component: CreateExpense,
 })
@@ -34,17 +36,20 @@ function CreateExpense() {
       <form
         action=""
         method="POST"
-        className="mt-4"
+        className="mt-4 flex flex-col gap-y-4"
         onSubmit={e => {
           e.preventDefault()
           e.stopPropagation()
-          form.handleSubmit()
+          void form.handleSubmit()
         }}
       >
         <form.Field
           name="title"
+          validators={{
+            onChange: createExpenseSchema.shape.title,
+          }}
           children={field => (
-            <>
+            <div>
               <Label className="mt-4 mb-2 ml-1" htmlFor={field.name}>
                 Title
               </Label>
@@ -58,15 +63,18 @@ function CreateExpense() {
                 onChange={e => field.handleChange(e.target.value)}
               />
               {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? (
-                <em>{field.state.meta.errors}</em>
+                <em>{field.state.meta.errors.map(e => e?.message)}</em>
               ) : null}
-            </>
+            </div>
           )}
         />
         <form.Field
           name="amount"
+          validators={{
+            onChange: createExpenseSchema.shape.amount,
+          }}
           children={field => (
-            <>
+            <div>
               <Label className="mt-4 mb-2 ml-1" htmlFor={field.name}>
                 Amount
               </Label>
@@ -79,9 +87,9 @@ function CreateExpense() {
                 onChange={e => field.handleChange(e.target.value)}
               />
               {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? (
-                <em>{field.state.meta.errors}</em>
+                <em>{field.state.meta.errors.map(e => e?.message)}</em>
               ) : null}
-            </>
+            </div>
           )}
         />
         <form.Subscribe
