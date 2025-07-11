@@ -3,6 +3,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { createFileRoute } from '@tanstack/react-router'
 import { useQuery } from '@tanstack/react-query'
 import { getAllExpensesQueryOptions } from '@/lib/api'
+import { useCreateExpenseStatus } from '@/context/create-expense-status'
 
 export const Route = createFileRoute('/_authenticated/expenses')({
   component: Expenses,
@@ -33,6 +34,7 @@ function SkeletonTableRow() {
 
 function Expenses() {
   const { isPending, error, data } = useQuery(getAllExpensesQueryOptions)
+  const createExpenseStatus = useCreateExpenseStatus()
 
   if (error) return 'An error has occurred: ' + error.message
 
@@ -48,6 +50,16 @@ function Expenses() {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {createExpenseStatus.newExpense && (
+          <TableRow>
+            <TableCell className="font-medium">
+              <Skeleton className="h-6" />
+            </TableCell>
+            <TableCell>{createExpenseStatus.newExpense?.title}</TableCell>
+            <TableCell>{createExpenseStatus.newExpense?.amount}</TableCell>
+            <TableCell>{createExpenseStatus.newExpense?.date.split('T')[0].split('-').reverse().join('-')}</TableCell>
+          </TableRow>
+        )}
         {isPending ? (
           <SkeletonTableRow />
         ) : (

@@ -11,6 +11,7 @@ import { createExpenseSchema } from '@server/sharedTypes'
 import { Calendar } from '@/components/ui/calendar'
 
 import { useQueryClient } from '@tanstack/react-query'
+import { useCreateExpenseStatus } from '@/context/create-expense-status'
 
 export const Route = createFileRoute('/_authenticated/create-expense')({
   component: CreateExpense,
@@ -19,6 +20,7 @@ export const Route = createFileRoute('/_authenticated/create-expense')({
 function CreateExpense() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
+  const createExpenseStatus = useCreateExpenseStatus()
 
   const form = useForm({
     defaultValues: {
@@ -31,12 +33,21 @@ function CreateExpense() {
 
       navigate({ to: '/expenses' })
 
-      const newExpense = await createExpense(value)
+      // Handle optimistic update
+      createExpenseStatus.setNewExpense(value)
 
-      queryClient.setQueryData(getAllExpensesQueryOptions.queryKey, {
-        ...existingExpenses,
-        expenses: [newExpense, ...existingExpenses.expenses],
-      })
+      try {
+        const newExpense = await createExpense(value)
+
+        queryClient.setQueryData(getAllExpensesQueryOptions.queryKey, {
+          ...existingExpenses,
+          expenses: [newExpense, ...existingExpenses.expenses],
+        })
+      } catch (error) {
+        createExpenseStatus.setNewExpense(null)
+      } finally {
+        createExpenseStatus.setNewExpense(null)
+      }
     },
   })
 
