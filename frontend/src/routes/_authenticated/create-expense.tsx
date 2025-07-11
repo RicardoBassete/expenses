@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 
-import { api, getAllExpensesQueryOptions } from '@/lib/api'
+import { createExpense, getAllExpensesQueryOptions } from '@/lib/api'
 
 import { createExpenseSchema } from '@server/sharedTypes'
 import { Calendar } from '@/components/ui/calendar'
@@ -27,12 +27,16 @@ function CreateExpense() {
       date: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
-      const res = await api.expenses.$post({ json: value })
-      if (!res.ok) {
-        throw new Error('Server error')
-      }
-      await queryClient.invalidateQueries({ queryKey: getAllExpensesQueryOptions.queryKey })
+      const existingExpenses = await queryClient.ensureQueryData(getAllExpensesQueryOptions)
+
       navigate({ to: '/expenses' })
+
+      const newExpense = await createExpense(value)
+
+      queryClient.setQueryData(getAllExpensesQueryOptions.queryKey, {
+        ...existingExpenses,
+        expenses: [newExpense, ...existingExpenses.expenses],
+      })
     },
   })
 
