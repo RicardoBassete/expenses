@@ -59,6 +59,7 @@ export const expensesRoute = new Hono()
       .values({
         title: expense.title,
         amount: expense.amount,
+        date: expense.date,
         userId: user.id,
       })
       .returning()

@@ -15,6 +15,13 @@
       "when": 1752003218790,
       "tag": "0001_gigantic_jazinda",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752247935914,
+      "tag": "0002_brown_zemo",
+      "breakpoints": true
     }
   ]
 }

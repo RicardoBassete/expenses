@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/lib/api'
 
 import { createExpenseSchema } from '@server/sharedTypes'
+import { Calendar } from '@/components/ui/calendar'
 
 export const Route = createFileRoute('/_authenticated/create-expense')({
   component: CreateExpense,
@@ -20,6 +21,7 @@ function CreateExpense() {
     defaultValues: {
       title: '',
       amount: '0',
+      date: new Date().toISOString(),
     },
     onSubmit: async ({ value }) => {
       const res = await api.expenses.$post({ json: value })
@@ -89,6 +91,25 @@ function CreateExpense() {
               {field.state.meta.isTouched && field.state.meta.errors.length > 0 ? (
                 <em>{field.state.meta.errors.map(e => e?.message)}</em>
               ) : null}
+            </div>
+          )}
+        />
+        <form.Field
+          name="date"
+          validators={{
+            onChange: createExpenseSchema.shape.date,
+          }}
+          children={field => (
+            <div className="self-start">
+              <Label className="mt-4 mb-2 ml-1" htmlFor={field.name}>
+                Date
+              </Label>
+              <Calendar
+                mode="single"
+                selected={new Date(field.state.value)}
+                onSelect={date => field.handleChange(date ? date.toISOString() : new Date().toISOString())}
+                className="rounded-md border"
+              />
             </div>
           )}
         />
