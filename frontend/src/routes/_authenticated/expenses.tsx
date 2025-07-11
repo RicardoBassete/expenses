@@ -32,6 +32,9 @@ function SkeletonTableRow() {
           <TableCell>
             <Skeleton className="h-6" />
           </TableCell>
+          <TableCell>
+            <Skeleton className="h-6" />
+          </TableCell>
         </TableRow>
       )
     })
@@ -50,6 +53,7 @@ function Expenses() {
           <TableHead className="w-[100px]">Id</TableHead>
           <TableHead>Title</TableHead>
           <TableHead>Amount</TableHead>
+          <TableHead>Date</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -61,6 +65,7 @@ function Expenses() {
               <TableCell className="font-medium">{expense.id}</TableCell>
               <TableCell>{expense.title}</TableCell>
               <TableCell>{expense.amount}</TableCell>
+              <TableCell>{expense.date.split('-').reverse().join('-')}</TableCell>
             </TableRow>
           ))
         )}
