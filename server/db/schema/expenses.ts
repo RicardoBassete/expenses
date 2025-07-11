@@ -10,7 +10,7 @@ export const expenses = pgTable(
     title: text('title').notNull(),
     amount: numeric('amount', { precision: 12, scale: 2 }).notNull(),
     date: date('date').notNull(),
-    createdAt: timestamp('created_at').defaultNow(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
   },
   expenses => {
     return {
