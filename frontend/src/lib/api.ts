@@ -46,3 +46,11 @@ export async function createExpense(value: CreateExpense) {
   const { expense } = await res.json()
   return expense
 }
+
+export async function deleteExpense({ id }: { id: number }) {
+  const res = await api.expenses[':id{[0-9]+}'].$delete({ param: { id: id.toString() } })
+
+  if (!res.ok) {
+    throw new Error('Server error')
+  }
+}
